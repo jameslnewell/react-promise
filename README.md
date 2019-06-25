@@ -58,7 +58,7 @@ const function putUsername = async (id, username) => {
 
 const User = ({id}) => {
   const input = useRef(null);
-  const {invoke, status, value, error} = useInvokablePromise((username) => putUsername(id, username), [id]);
+  const {status, value, error, invoke} = useInvokablePromise((username) => putUsername(id, username), [id]);
   return (
     <>
       <input ref={ref}/>
@@ -110,5 +110,3 @@ Invoke a promise on demand and manage the state.
 - `isPending` - Whether the promise is pending.
 - `isFulfilled` - Whether the promise is fulfilled.
 - `isRejected`- Whether the promise is rejected.
-
-## License
