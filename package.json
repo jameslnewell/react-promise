@@ -1,5 +1,5 @@
 {
-  "name": "react-promise",
+  "name": "@jameslnewell/react-promise",
   "version": "2.0.0",
   "description": "React hooks for working with promises.",
   "repository": "jameslnewell/react-promise",
