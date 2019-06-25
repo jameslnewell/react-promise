@@ -10,71 +10,100 @@ yarn add @jameslnewell/react-promise
 
 ## Usage
 
-> <a href="https://codesandbox.io/embed/jameslnewellreactpromise-xe0om?fontsize=14">Live Example</a>
+> [Live Example](https://codesandbox.io/embed/jameslnewellreactpromise-xe0om?fontsize=14) - You can find a more realistic example in CodeSandbox.
+
+### usePromise()
+
+Fetch the user's username when the component mounts or the user ID has changed.
 
 ```js
-import React, {useState, useEffect} from 'react';
-import {usePromise, useInvokablePromise} from '@jameslnewell/react-promise';
+import React from 'react';
+import {usePromise} from '@jameslnewell/react-promise';
 
-async function getUsername(id) {
+const getUsername = async id => {
   const res = await fetch(`/user/${id}`, {method: 'GET'});
   const data = await res.json();
   return data.username;
-}
+};
 
-async function putUsername(id, username) {
+const User = ({id}) => {
+  const {status, value, error} = usePromise(() => getUsername(id), [id]);
+  return (
+    <>
+      {status === 'pending' && '🔄 Loading...'}
+      {status === 'fulfilled' && `👋 Hello ${value}`}
+      {status === 'rejected' && `❌ ${String(error)}`}
+    </>
+  );
+};
+```
+
+### useInvokablePromise()
+
+Post the user's username when the `invoke()` method is called.
+
+```js
+import React, {useRef} from 'react';
+import {useInvokablePromise} from '@jameslnewell/react-promise';
+
+const function putUsername = async (id, username) => {
   await fetch(`/user/${id}`, {
     method: 'POST',
     body: JSON.stringify({username}),
   });
-}
+};
 
-const Username = ({id}) => {
-  const [username, setUsername] = useState('');
-  const [isEdited, setEdited] = useState(false);
-
-  const load = usePromise(() => getUsername(id), [id]);
-
-  const save = useInvokablePromise(() => putUsername(id, username), [
-    id,
-    username,
-  ]);
-
-  // reset the username when it loads
-  useEffect(() => {
-    setUsername(load.value || '');
-    setEdited(false);
-  }, [load.value]);
-
-  const isLoading = load.isPending;
-  const isLoadingError = load.isRejected;
-  const isSaving = save.isPending;
-  const canEdit = !isLoading && !isLoadingError && !isSaving;
-  const canSave = !isLoading && !isLoadingError && !isSaving && isEdited;
-  const isSaved = save.isFulfilled && !isEdited;
-  const error = load.error || save.error;
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEdited(true);
-    setUsername(event.target.value);
-  };
-
-  const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    await save.invoke(id, username);
-    setEdited(false);
-  };
-
+const User = ({id}) => {
+  const input = useRef(null);
+  const {invoke, status, value, error} = useInvokablePromise((newUsername) => putUsername(id, newUsername), [id]);
   return (
-    <form onSubmit={handleSave}>
-      <input disabled={!canEdit} value={username} onChange={handleChange} />
-      {isEdited && '📝'}
-      {isLoading || (isSaving && '🔄')}
-      {isSaved && '✅'}
-      {error && <span style={{color: 'red'}}>❌ {error}</span>}
-      <br />
-      <button disabled={!canSave}>Save</button>
-    </form>
+    <>
+      <input ref={ref}/>
+      <button onClick={() => invoke(input.current.value)}>Invoke</button>
+      <hr />
+      {status === 'pending' && '🔄 Loading...'}
+      {status === 'fulfilled' && `👋 Hello ${value}`}
+      {status === 'rejected' && `❌ ${String(error)}`}
+    </>
   );
 };
 ```
+
+## API
+
+### usePromise()
+
+Immediately invoke a promise and manage the state.
+
+**Parameters:**
+
+- `fn` - A function that returns a promise to invoke.
+- `deps` - Any variables that the function is dependent on and should cause a new promise to be invoked.
+
+**Returns:**
+
+- `status` - Whether the promise is `pending`, `fulfilled` or `rejected`
+- `value` - The value resolved by the promise.
+- `error` - The error resolving the promise.
+- `isPending` - Whether the promise is pending.
+- `isFulfilled` - Whether the promise is fulfilled.
+- `isRejected`- Whether the promise is rejected.
+
+### useInvokablePromise()
+
+Invoke a promise on demand and manage the state.
+
+**Parameters:**
+
+- `fn` - A function that returns a promise to invoke.
+- `deps` - Any variables that the function is dependent on and should cause a new promise to be invoked.
+
+**Returns:**
+
+- `invoke` - A function to invoke the promise and manage state.
+- `status` - Whether the promise is `pending`, `fulfilled` or `rejected`
+- `value` - The value resolved by the promise.
+- `error` - The error resolving the promise.
+- `isPending` - Whether the promise is pending.
+- `isFulfilled` - Whether the promise is fulfilled.
+- `isRejected`- Whether the promise is rejected.
