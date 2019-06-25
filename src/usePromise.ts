@@ -5,12 +5,11 @@ import {Action, reset} from './utils/Action';
 import {useMounted} from './utils/useMounted';
 import {reducer} from './utils/reducer';
 import {initialState} from './utils/initialState';
-import {isPromise} from './utils/isPromise';
-import {track} from './utils/track';
+import {invoke} from './utils/invoke';
 import {getOutput, Output} from './utils/getOutput';
 
 export function usePromise<T>(
-  fn: Factory<T, []>,
+  fn: Factory<T, []> | undefined,
   deps: Dependencies = [],
 ): Output<T> {
   const isMounted = useMounted();
@@ -22,12 +21,15 @@ export function usePromise<T>(
   useEffect(() => {
     // reset state whenever the dependencies change i.e. the result returned by the function will be a new promise
     // execute and track the promise state
-    const promise = fn();
-    if (isPromise(promise)) {
-      track(promise, dispatch, isMounted);
-    } else {
-      dispatch(reset());
-    }
+    dispatch(reset());
+    invoke<T, []>(
+      {
+        fn,
+        dispatch,
+        isMounted,
+      },
+      [],
+    );
   }, deps);
 
   return getOutput(state);

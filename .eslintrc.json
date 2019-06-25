@@ -1,5 +1,5 @@
 {
-  "extends": "@jameslnewell/eslint-config",
+  "extends": "@jameslnewell/eslint-config/react",
   "env": {
     "es6": true,
     "jest": true,

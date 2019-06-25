@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Status} from '../src';
+import {Status} from '../../src';
 
 export interface PromiseStateProps {
   status: Status | undefined;

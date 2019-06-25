@@ -1,7 +1,7 @@
-import {reducer} from './reducer';
-import {Status} from '../types';
-import {State} from './State';
-import {reset, resolving, resolved, rejected} from './Action';
+import {reducer} from '../../src/utils/reducer';
+import {Status} from '../../src/types';
+import {State} from '../../src/utils/State';
+import {reset, pending, fulfilled, rejected} from '../../src/utils/Action';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const resetState: State<any> = {
@@ -37,11 +37,11 @@ describe('reducer()', () => {
   });
 
   it('should be in a resolving state when resolving', () => {
-    expect(reducer(resetState, resolving())).toEqual(resolvingState);
+    expect(reducer(resetState, pending())).toEqual(resolvingState);
   });
 
   it('should be in a resolved state when resolved', () => {
-    expect(reducer(resolvingState, resolved({foo: 'bar'}))).toEqual(
+    expect(reducer(resolvingState, fulfilled({foo: 'bar'}))).toEqual(
       resolvedState,
     );
   });

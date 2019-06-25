@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {PromiseType} from './createPromise';
+import {PromiseType} from './factory';
 
 export interface PromiseConfigProps {
   initialType: PromiseType;

@@ -1,5 +1,5 @@
 import {renderHook} from 'react-hooks-testing-library';
-import {Status, Factory, usePromise} from '.';
+import {Status, Factory, usePromise} from '../src';
 
 describe('usePromise()', () => {
   // https://github.com/mpeyper/react-hooks-testing-library/issues/76
@@ -19,7 +19,7 @@ describe('usePromise()', () => {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  function runUsePromiseHook<T>(fn: Factory<T>) {
+  function runUsePromiseHook<T>(fn: Factory<T> | undefined) {
     return runHook(() => usePromise(fn));
   }
 
@@ -36,7 +36,7 @@ describe('usePromise()', () => {
   }
 
   it('should be unknown when no promise is returned', async () => {
-    const {result} = runUsePromiseHook(() => undefined);
+    const {result} = runUsePromiseHook(undefined);
     expect(result.current).toEqual(
       expect.objectContaining({
         status: undefined,
@@ -75,7 +75,7 @@ describe('usePromise()', () => {
 
   it('should be rejected when a promise is returned and is rejected', async () => {
     const {result, waitForNextUpdate} = runUsePromiseHook(() =>
-      delay(Promise.reject(new Error('This is a test error!'))),
+      Promise.reject(new Error('This is a test error!')),
     );
     await waitForNextUpdate();
     expect(result.current).toEqual(
@@ -105,7 +105,7 @@ describe('usePromise()', () => {
     const {result, waitForNextUpdate, rerender} = renderHook(
       ({step}: {step: 0 | 1}) =>
         usePromise(
-          () => (step === 0 ? delay(Promise.resolve({foo: 'bar'})) : undefined),
+          step === 0 ? () => delay(Promise.resolve({foo: 'bar'})) : undefined,
           [step],
         ),
       {initialProps: {step: 0}},

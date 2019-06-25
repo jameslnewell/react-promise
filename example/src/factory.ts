@@ -1,14 +1,14 @@
 export type PromiseType = 'none' | 'resolve' | 'reject';
 
-export function createPromise(
+export function factory(
   type: PromiseType,
   delay: number,
-): Promise<{type: PromiseType; delay: number}> | undefined {
+): (() => Promise<{type: PromiseType; delay: number}>) | undefined {
   if (type === 'none') {
     return undefined;
   }
-  return new Promise(
-    (resolve, reject): void => {
+  return () =>
+    new Promise((resolve, reject): void => {
       setTimeout((): void => {
         if (type === 'resolve') {
           resolve({type, delay});
@@ -16,6 +16,5 @@ export function createPromise(
           reject(new Error('Rejected!'));
         }
       }, delay);
-    },
-  );
+    });
 }

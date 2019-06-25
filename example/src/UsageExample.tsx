@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {storiesOf} from '@storybook/react';
-import {usePromise, useInvokablePromise} from '../src';
+import {usePromise, useInvokablePromise} from '../../src';
 import './styles.css';
 
 async function getUsername(id: string): Promise<string> {
@@ -14,7 +13,7 @@ async function putUsername(id: string, username: string): Promise<void> {
   return new Promise(resolve => setTimeout(() => resolve(), 1000));
 }
 
-const Example: React.FC<{id: string}> = ({id}) => {
+export const UsageExample: React.FC<{id: string}> = ({id}) => {
   const [username, setUsername] = useState<string>('');
   const [isEdited, setEdited] = useState<boolean>(false);
 
@@ -62,7 +61,3 @@ const Example: React.FC<{id: string}> = ({id}) => {
     </form>
   );
 };
-
-storiesOf('@jameslnewell/react-promise', module).add('Usage', () => (
-  <Example id="abc-123" />
-));

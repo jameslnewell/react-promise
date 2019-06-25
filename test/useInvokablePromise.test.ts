@@ -1,6 +1,6 @@
 import {renderHook} from 'react-hooks-testing-library';
-import {useInvokablePromise} from '.';
-import {Factory, Status} from './types';
+import {useInvokablePromise} from '../src';
+import {Factory, Status} from '../src/types';
 
 describe('useInvokablePromise()', () => {
   // https://github.com/mpeyper/react-hooks-testing-library/issues/76
@@ -21,7 +21,7 @@ describe('useInvokablePromise()', () => {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type,@typescript-eslint/no-explicit-any
   function runUseInvokablePromiseHook<T, P extends any[] = []>(
-    fn: Factory<T, P>,
+    fn: Factory<T, P> | undefined,
   ) {
     return runHook(() => useInvokablePromise(fn));
   }
@@ -39,7 +39,7 @@ describe('useInvokablePromise()', () => {
   }
 
   it('should be unknown when a promise is not returned', async () => {
-    const {result} = runUseInvokablePromiseHook(() => undefined);
+    const {result} = runUseInvokablePromiseHook(undefined);
     expect(result.current).toEqual(
       expect.objectContaining({
         status: undefined,
@@ -93,7 +93,7 @@ describe('useInvokablePromise()', () => {
 
   it('should be rejected when a promise is returned and is rejected', async () => {
     const {result, waitForNextUpdate} = runUseInvokablePromiseHook(() =>
-      delay(Promise.reject(new Error('This is a test error!'))),
+      Promise.reject(new Error('This is a test error!')),
     );
     result.current.invoke();
     await waitForNextUpdate();
@@ -125,7 +125,7 @@ describe('useInvokablePromise()', () => {
     const {result, waitForNextUpdate, rerender} = renderHook(
       ({step}: {step: 0 | 1}) =>
         useInvokablePromise(
-          () => (step === 0 ? delay(Promise.resolve({foo: 'bar'})) : undefined),
+          step === 0 ? () => delay(Promise.resolve({foo: 'bar'})) : undefined,
           [step],
         ),
       {initialProps: {step: 0}},

@@ -1,5 +1,5 @@
 import {renderHook} from 'react-hooks-testing-library';
-import {useMounted} from './useMounted';
+import {useMounted} from '../../src/utils/useMounted';
 
 describe('useMounted()', () => {
   // https://github.com/mpeyper/react-hooks-testing-library/issues/76

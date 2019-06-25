@@ -1,18 +1,17 @@
 import * as React from 'react';
-import {storiesOf} from '@storybook/react';
-import {usePromise} from '../src';
-import {PromiseType, createPromise} from './createPromise';
+import {useInvokablePromise} from '../../src';
+import {PromiseType, factory} from './factory';
 import {PromiseState} from './PromiseState';
 import {PromiseConfig} from './PromiseConfig';
 import './styles.css';
 
-const Example: React.FunctionComponent = () => {
+export const UseInvokablePromiseExample: React.FunctionComponent = () => {
   const [type, setType] = React.useState<PromiseType>('resolve');
   const [delay, setDelay] = React.useState(1000);
-  const {status, error, value} = usePromise(() => createPromise(type, delay), [
-    type,
-    delay,
-  ]);
+  const {status, error, value, invoke} = useInvokablePromise(
+    factory(type, delay),
+    [type, delay],
+  );
 
   const handleChange = ({type, delay}: {type: PromiseType; delay: number}) => {
     setType(type);
@@ -22,6 +21,7 @@ const Example: React.FunctionComponent = () => {
   return (
     <>
       <PromiseState status={status} error={error} value={value} />
+      <button onClick={() => invoke()}>Invoke</button>
       <PromiseConfig
         initialType={type}
         initialDelay={delay}
@@ -30,7 +30,3 @@ const Example: React.FunctionComponent = () => {
     </>
   );
 };
-
-storiesOf('@jameslnewell/react-promise', module).add('usePromise()', () => (
-  <Example />
-));

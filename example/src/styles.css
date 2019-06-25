@@ -1,4 +1,3 @@
-
 .form__submit {
   margin-top: 1em;
 }
@@ -10,7 +9,7 @@
 
 .control__label {
   display: block;
-  font-weight: bold;  
+  font-weight: bold;
 }
 
 .radio {
