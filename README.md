@@ -10,7 +10,7 @@ yarn add @jameslnewell/react-promise
 
 ## Usage
 
-> [Live Example](https://codesandbox.io/embed/jameslnewellreactpromise-xe0om?fontsize=14) - You can find a more realistic example in CodeSandbox.
+> [Live Example](https://codesandbox.io/s/jameslnewellreactpromise-xe0om?fontsize=14) - You can find a more realistic example in CodeSandbox.
 
 ### usePromise()
 
