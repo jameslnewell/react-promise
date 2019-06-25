@@ -1,7 +1,6 @@
 # @jameslnewell/react-promise
 
 ![npm (scoped)](https://img.shields.io/npm/v/@jameslnewell/react-promise.svg)
-
 [![Build Status](https://travis-ci.org/jameslnewell/react-promise.svg?branch=master)](https://travis-ci.org/jameslnewell/react-promise)
 
 🤝 React hooks for working with promises.
